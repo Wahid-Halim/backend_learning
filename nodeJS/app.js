@@ -1,13 +1,16 @@
-const { createReadStream } = require("fs");
+const http = require("http");
+const fs = require("fs");
 
-const readableStream = createReadStream("./content/big.txt");
+const server = http.createServer((req, res) => {
+  const fileStream = fs.createReadStream("./content/big.txt", "utf8");
 
-readableStream.on("data", (chunk) => {
-  console.log("Received a chunk of data:");
-  console.log(chunk);
+  fileStream.on("open", () => {
+    fileStream.pipe(res);
+  });
+
+  fileStream.on("error", (err) => {
+    res.end(err);
+  });
 });
 
-// Listen for 'end' event — when reading is finished
-readableStream.on("end", () => {
-  console.log("Finished reading the file.");
-});
+server.listen(5000);
