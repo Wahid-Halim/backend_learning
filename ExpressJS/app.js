@@ -1,17 +1,24 @@
 const express = require("express");
-const path = require("path");
 const app = express();
 
-app.use(express.static("./public"));
+const { products } = require("./data");
 
 app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "./navbar-app/index.html"));
+  res.json(products);
 });
 
-app.all("*", (req, res) => {
-  res.status(404).send("Page not found 404");
+app.get("/api/products", (req, res) => {
+  const newProducts = products.map((product) => {
+    const { image, id, name } = product;
+    return {
+      image,
+      id,
+      name,
+    };
+  });
+  res.json(newProducts);
 });
 
 app.listen(5000, () => {
-  console.log("Server is listening in port 5000");
+  console.log("Server is listening on port 5000");
 });
