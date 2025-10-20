@@ -1,16 +1,6 @@
-const http = require("http");
-const fs = require("fs");
+const EventEmitter = require("events");
+const emitter = new EventEmitter();
 
-const server = http.createServer((req, res) => {
-  const fileStream = fs.createReadStream("./content/big.txt", "utf8");
-
-  fileStream.on("open", () => {
-    fileStream.pipe(res);
-  });
-
-  fileStream.on("error", (err) => {
-    res.end(err);
-  });
+emitter.on("start", () => {
+  console.log("Server started");
 });
-
-server.listen(5000);
