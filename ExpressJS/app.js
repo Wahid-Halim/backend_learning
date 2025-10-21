@@ -1,21 +1,31 @@
 const express = require("express");
-
 const app = express();
 
-const logger = (req, res, next) => {
-  const method = req.method;
-  const url = req.url;
-  const time = new Date().getFullYear();
-  console.log(method, url, time);
-  next();
-};
+const logger = require("./logger");
+const authorize = require("./authorize");
+const morgan = require("morgan");
 
-app.get("/", logger, (req, res) => {
+// middleware own / express /third party
+
+// app.use([logger, authorize]);
+// app.use(express.static('./public'));
+app.use(morgan("tiny"));
+
+app.get("/", (req, res) => {
   res.send("Home page");
 });
 
-app.get("/about", logger, (req, res) => {
+app.get("/about", (req, res) => {
   res.send("about page");
+});
+
+app.get("/api/products", (req, res) => {
+  res.send("products");
+});
+
+app.get("/api/items", (req, res) => {
+  console.log(req.user);
+  res.send("items");
 });
 
 app.listen(5000, () => {
