@@ -1,31 +1,20 @@
 const express = require("express");
 const app = express();
+let { people } = require("./data");
 
-const logger = require("./logger");
-const authorize = require("./authorize");
-const morgan = require("morgan");
+app.use(express.static("./methods-public"));
+app.use(express.urlencoded({ extended: false }));
 
-// middleware own / express /third party
-
-// app.use([logger, authorize]);
-// app.use(express.static('./public'));
-app.use(morgan("tiny"));
-
-app.get("/", (req, res) => {
-  res.send("Home page");
+app.get("./api/people", (req, res) => {
+  res.status(200).json({ success: true, date: people });
 });
 
-app.get("/about", (req, res) => {
-  res.send("about page");
-});
-
-app.get("/api/products", (req, res) => {
-  res.send("products");
-});
-
-app.get("/api/items", (req, res) => {
-  console.log(req.user);
-  res.send("items");
+app.post("/login", (req, res) => {
+  const { name } = req.body;
+  if (name) {
+    return res.status(200).send(`Welcome ${name}`);
+  }
+  res.status(401).send("Please enter the provided credentials");
 });
 
 app.listen(5000, () => {
